@@ -49,6 +49,10 @@ with open("pokemon.txt") as file:
         matchValue = match.group(2)
 
         if matchKey == "Name":
+            if processing == 29:
+                matchValue = "Nidoran F"
+            elif processing == 32:
+                matchValue = "Nidoran M"
             displayName[processing] = matchValue
             idFromDisplayName[matchValue.lower()] = processing
         elif matchKey == "InternalName":
