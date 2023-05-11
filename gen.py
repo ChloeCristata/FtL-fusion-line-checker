@@ -2,7 +2,7 @@ import math
 import re
 import os.path
 
-SPRITEPACK_PATH = "custom-fusion-sprites"
+SPRITEPACK_PATH = "sprites"
 
 def chunks(arr: list, n: int):
     for i in range(0, len(arr), n):
@@ -173,7 +173,7 @@ def print_fusion_line(head, body):
 
 def print_sprite(head, body):
     if has_custom_sprite(head, body):
-        return f"https://raw.githubusercontent.com/Aegide/custom-fusion-sprites/main/CustomBattlers/{head}.{body}.png"
+        return f"https://raw.githubusercontent.com/infinitefusion/sprites/main/CustomBattlers/{head}.{body}.png"
     return "No sprite yet!"
 
 def export_csv():
