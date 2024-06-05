@@ -1,3 +1,3 @@
 [submodule "sprites"]
 	path = sprites
-	url = https://github.com/infinitefusion/infinitefusion-e18/blob/9b14df38b6a75c849956b95dba1119b8d3ea124b/Data/CUSTOM_SPRITES
+	url = https://github.com/infinitefusion/infinitefusion-e18/tree/main/Graphics
