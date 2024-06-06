@@ -53,6 +53,24 @@ with open("pokemon.txt") as file:
                 matchValue = "Nidoran F"
             elif processing == 32:
                 matchValue = "Nidoran M"
+            elif processing == 430:
+                matchValue = "Oricorio Baile"
+            elif processing == 431:
+                matchValue = "Oricorio Pom-Pom"
+            elif processing == 432:
+                matchValue = "Oricorio Pa'u"
+            elif processing == 433:
+                matchValue = "Oricorio Sensu"
+            elif processing == 464:
+                matchValue = "Lycanroc Midday"
+            elif processing == 465:
+                matchValue = "Lycanroc Midnight"
+            elif processing == 466:
+                matchValue = "Meloetta Aria"
+            elif processing == 467:
+                matchValue = "Meloetta Pirouette"
+            elif processing == 470:
+                matchValue = "Ultra Necrozma"
             displayName[processing] = matchValue
             idFromDisplayName[matchValue.lower()] = processing
         elif matchKey == "InternalName":
@@ -97,7 +115,7 @@ def register_evolutions(id, lvl, preEvo):
         evolutions[id].append([evoId, evoLevel, evoOptional])
         register_evolutions(evoId, evoLevel, id)
 
-for i in range(1, 421):
+for i in range(1, 471):
     if not hasPreEvo.get(nameFromId[i], False):
         register_evolutions(i, 1, None)
 
@@ -135,17 +153,17 @@ def register_fusions(list, head, body):
         register_fusions(list, head, bodyEvo[0])
     return list
 
-for head in range(1, 421):
+for head in range(1, 471):
     fusionLines[head] = {}
-    for body in range(1, 421):
+    for body in range(1, 471):
         fusionLines[head][body] = register_fusions([], head, body)
 
 print("Checking custom sprite status...")
 
 customSpriteList = []
 
-for head in range(1, 421):
-    for body in range(1, 421):
+for head in range(1, 471):
+    for body in range(1, 471):
         if os.path.isfile(os.path.join(SPRITEPACK_PATH, "CustomBattlers", f"{head}.{body}.png")):
             customSpriteList.append(f"{head}.{body}")
 
@@ -173,7 +191,7 @@ def print_fusion_line(head, body):
 
 def print_sprite(head, body):
     if has_custom_sprite(head, body):
-        return f"https://raw.githubusercontent.com/infinitefusion/sprites/main/CustomBattlers/{head}.{body}.png"
+        return "Has at least one sprite!"
     return "No sprite yet!"
 
 def export_csv():
@@ -181,17 +199,17 @@ def export_csv():
 
     headNames = ["",""]
     headIds = ["",""]
-    for head in range(1, 421):
+    for head in range(1, 471):
         headNames.append(displayName[head])
         headIds.append(str(head))
     completionRows = [",".join(headNames)+"\n", ",".join(headIds)+"\n"]
     fusionLineRows = [",".join(headNames)+"\n", ",".join(headIds)+"\n"]
     spriteRows     = [",".join(headNames)+"\n", ",".join(headIds)+"\n"]
-    for body in range(1, 421):
+    for body in range(1, 471):
         completionRow = [displayName[body], str(body)]
         fusionLineRow = [displayName[body], str(body)]
         spriteRow     = [displayName[body], str(body)]
-        for head in range(1, 421):
+        for head in range(1, 471):
             completionRow.append(print_percentage(head, body))
             fusionLineRow.append(print_fusion_line(head, body))
             spriteRow    .append(print_sprite(head, body))
@@ -258,7 +276,7 @@ while True:
     elif bodyInput.upper() in idFromName:
         body = idFromName[bodyInput.upper()]
     
-    if head < 1 or head > 420 or body < 1 or body > 420:
+    if head < 1 or head > 470 or body < 1 or body > 470:
         print("Invalid input ( Head / Body )")
         print("")
         continue

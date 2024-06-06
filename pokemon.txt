@@ -13957,7 +13957,7 @@ BattlerEnemyX = -7
 BattlerEnemyY = 18
 BattlerShadowX = 0
 BattlerShadowSize = 3
-Evolutions = TYRANTRUM,LevelDay,39
+Evolutions = TYRANTRUM,Level,39
 #-------------------------------
 [426]
 Name = Tyrantrum
@@ -15154,7 +15154,7 @@ BattlerEnemyX = 0
 BattlerEnemyY = 12
 BattlerShadowX = 0
 BattlerShadowSize = 2
-Evolutions = AURORUS,LevelNight,39
+Evolutions = AURORUS,Level,39
 #-------------------------------
 [462]
 Name = Aurorus
@@ -15219,7 +15219,7 @@ BattlerEnemyX = 1
 BattlerEnemyY = 16
 BattlerShadowX = 0
 BattlerShadowSize = 2
-Evolutions = LYCANROC_N,LevelNight,25,LYCANROC_D,LevelDay,25
+Evolutions = LYCANROC_N,Level,25,LYCANROC_D,Level,25
 #-------------------------------
 [464]
 Name = Lycanroc
