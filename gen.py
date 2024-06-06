@@ -38,7 +38,7 @@ with open("pokemon.txt") as file:
             continue
 
         if processing == None:
-            print("Unexpected line")
+#            print("Unexpected line")
             continue
         
         match = re.match(r"(\S+)\s*=\s*(.+)", line)
@@ -158,30 +158,30 @@ for head in range(1, 471):
     for body in range(1, 471):
         fusionLines[head][body] = register_fusions([], head, body)
 
-print("Checking custom sprite status...")
-
-customSpriteList = []
-
-for head in range(1, 471):
-    for body in range(1, 471):
-        if os.path.isfile(os.path.join(SPRITEPACK_PATH, "CustomBattlers", f"{head}.{body}.png")):
-            customSpriteList.append(f"{head}.{body}")
-
-customSprites = set(customSpriteList)
+#print("Checking custom sprite status...")
+#
+#customSpriteList = []
+#
+#for head in range(1, 471):
+#    for body in range(1, 471):
+#        if os.path.isfile(os.path.join(SPRITEPACK_PATH, "CustomBattlers", f"{head}.{body}.png")):
+#            customSpriteList.append(f"{head}.{body}")
+#
+#customSprites = set(customSpriteList)
 
 print("Done")
 
 
-def has_custom_sprite(head, body):
-    return f"{head}.{body}" in customSprites
+#def has_custom_sprite(head, body):
+#    return f"{head}.{body}" in customSprites
 
-def print_percentage(head, body):
-    fusions = fusionLines[head][body]
-    count = 0.0
-    for fusion in fusions:
-        if has_custom_sprite(fusion[0], fusion[1]):
-            count += 1
-    return str((count / len(fusions)) * 100) + "%"
+#def print_percentage(head, body):
+#    fusions = fusionLines[head][body]
+#    count = 0.0
+#    for fusion in fusions:
+#        if has_custom_sprite(fusion[0], fusion[1]):
+#            count += 1
+#    return str((count / len(fusions)) * 100) + "%"
 
 def print_fusion_line(head, body):
     nums = []
@@ -190,49 +190,49 @@ def print_fusion_line(head, body):
     return "|".join(nums)
 
 def print_sprite(head, body):
-    if has_custom_sprite(head, body):
-        return "Has at least one sprite!"
-    return "No sprite yet!"
+#    if has_custom_sprite(head, body):
+#        return "Something has either gone horribly right or horribly wrong."
+    return f"https://if.daena.me/{head}.{body}"
 
 def export_csv():
-    print("Generating charts...")
+    print("Exporting data...")
 
     headNames = ["",""]
     headIds = ["",""]
     for head in range(1, 471):
         headNames.append(displayName[head])
         headIds.append(str(head))
-    completionRows = [",".join(headNames)+"\n", ",".join(headIds)+"\n"]
+#    completionRows = [",".join(headNames)+"\n", ",".join(headIds)+"\n"]
     fusionLineRows = [",".join(headNames)+"\n", ",".join(headIds)+"\n"]
     spriteRows     = [",".join(headNames)+"\n", ",".join(headIds)+"\n"]
     for body in range(1, 471):
-        completionRow = [displayName[body], str(body)]
+#        completionRow = [displayName[body], str(body)]
         fusionLineRow = [displayName[body], str(body)]
         spriteRow     = [displayName[body], str(body)]
         for head in range(1, 471):
-            completionRow.append(print_percentage(head, body))
+#            completionRow.append(print_percentage(head, body))
             fusionLineRow.append(print_fusion_line(head, body))
             spriteRow    .append(print_sprite(head, body))
-        completionRows.append(",".join(completionRow) + "\n")
+#        completionRows.append(",".join(completionRow) + "\n")
         fusionLineRows.append(",".join(fusionLineRow) + "\n")
         spriteRows    .append(",".join(spriteRow    ) + "\n")
 
-    print("Exporting completion chart...")
-    with open("export_completion.csv", "w") as file:
-        file.writelines(completionRows)
+#    print("Exporting completion chart...")
+#    with open("export_completion.csv", "w") as file:
+#        file.writelines(completionRows)
     
     print("Exporting fusion line chart...")
     with open("export_fusion_lines.csv", "w") as file:
         file.writelines(fusionLineRows)
 
-    print("Exporting sprite chart...")
+#    print("Exporting sprite chart...")
     with open("export_sprites.csv", "w") as file:
         file.writelines(spriteRows)
 
     print("Done")
 
 print("")
-print(f"Found {len(customSprites)} custom sprites")
+#print(f"Found {len(customSprites)} custom sprites")
 
 print("")
 print("Enter \"[head name]/[body name]\" to check an evolution line.")
@@ -282,9 +282,9 @@ while True:
         continue
 
     for pair in fusionLines[head][body]:
-        if has_custom_sprite(pair[0], pair[1]):
-            print(f"✓ {displayName[pair[0]]} / {displayName[pair[1]]}")
-        else:
+#        if has_custom_sprite(pair[0], pair[1]):
+#            print(f"✓ {displayName[pair[0]]} / {displayName[pair[1]]}")
+#        else:
             print(f"  {displayName[pair[0]]} / {displayName[pair[1]]}")
     
     print("")
