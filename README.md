@@ -1,7 +1,9 @@
-# Pokemon Fusion Line Checker
+# Pokemon Fusion Line Checker (Finish the Line Edition!)
+Used to create the data in the [Finish the Line Auto-Chart](https://docs.google.com/spreadsheets/d/1l5odSUYcGQKZG19BF_m-uqtCOtat7Sm-CHzhGtNffh8/edit?usp=sharing).
 
-Used to create the data in the [IF Evolution Line Checker sheet](https://docs.google.com/spreadsheets/d/1o_6vyD7KuapDeMout_jNSTgZRZu-Sp1H3ez-8g8JUDI/edit?usp=sharing).
+Original version/code is from SylviBlossom. Massive kudos to them!
+
+
+
 
 Run `gen.py` in the command line to easily check fused evolution lines, or to re-export the CSV sheets.
-
-Make sure the custom sprites submodule is cloned! Run `git submodule update --init --recursive` to clone submodules.
