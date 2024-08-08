@@ -1,13 +1,20 @@
-#Disclaimer!!!
-#I (Cristata) did not write the original code to this.
-#All I did was modify it to be used as a resource for my mini-event: Finish the Line.
+# Disclaimer!!!
+# I (Cristata) did not write the original code to this.
+# All I did was modify it to be used as a resource for my mini-event: Finish the Line.
 
-#The original code was written by SylviBlossom and can be found here:
+# The original code was written by SylviBlossom and can be found here:
 # https://github.com/SylviBlossom/fusion-line-checker
 
-#Massive kudos to them for writing this!
+# Massive kudos to them for writing this!
+
+
+
+                    # I had little to no part in writing the following sections of this code:
+
 
 import re
+import csv
+from collections import defaultdict
 
 def chunks(arr: list, n: int):
     for i in range(0, len(arr), n):
@@ -89,7 +96,8 @@ with open("pokemon.txt") as file:
             for evolution in rawEvolutions[processing]:
                 hasPreEvo[evolution[0]] = True
 
-print("Calculating evolutions...")
+print("Calculating evolution lines...")
+print("Done")
 
 evolutions = {}
 baseLevel = {}
@@ -143,9 +151,58 @@ for pokemon_id in evolutions.keys():
     if pokemon_id not in visited:
         sorted_evolution_lines.append(traverse_evolution_line(pokemon_id))
 
-# Print the sorted evolution lines for verification
-for line in sorted_evolution_lines:
-    print([displayName[pokemon_id] for pokemon_id in line])
+# Convert Pokémon IDs to their display names
+sorted_evolution_lines_with_names = [
+    [displayName[pokemon_id] for pokemon_id in line]
+    for line in sorted_evolution_lines
+]
+
+# Create a dictionary to store sorted evolution lines by the lowest Pokémon name
+sorted_name_to_evolution_line = {}
+
+# Create a dictionary to map each display name to its evolution line
+name_to_evolution_line = {}
+for line in sorted_evolution_lines_with_names:
+    # Extract valid Pokémon names that exist in idFromDisplayName
+    valid_pokemon_names = [pokemon_name for pokemon_name in line if pokemon_name.lower() in idFromDisplayName]
+    
+    if valid_pokemon_names:
+        # Find the lowest valid Pokémon ID from the valid names using idFromDisplayName
+        lowest_id = min(idFromDisplayName[name.lower()] for name in valid_pokemon_names)
+        # Find the corresponding Pokémon name for the lowest ID
+        lowest_name = displayName[lowest_id]
+        name_to_evolution_line[lowest_name] = line
+
+# Check if name_to_evolution_line has entries
+if not name_to_evolution_line:
+    print("No valid Pokémon names found in evolution lines.")
+else:
+    # Sort the evolution lines based on the lowest ID in the line
+    sorted_evolution_lines_sorted_by_names = sorted(
+        name_to_evolution_line.values(),
+        key=lambda line: min(idFromDisplayName[name.lower()] for name in line if name.lower() in idFromDisplayName)
+    )
+
+    # Create a dictionary to map each lowest Pokémon name to its sorted evolution line
+    for line in sorted_evolution_lines_sorted_by_names:
+        # Find the lowest valid Pokémon ID from the line
+        lowest_id = min(idFromDisplayName[name.lower()] for name in line if name.lower() in idFromDisplayName)
+        # Find the corresponding Pokémon name for the lowest ID
+        lowest_name = displayName[lowest_id]
+        sorted_name_to_evolution_line[lowest_name] = line
+
+    # Write the sorted evolution lines with display names to a file
+    with open("sorted_pokemon_lines.txt", "w", newline='') as file:
+        writer = csv.writer(file)
+        writer.writerows(sorted_evolution_lines_sorted_by_names)
+
+print("")
+print("All evolution lines have been sorted below and exported to 'sorted_pokemon_lines.txt' for further use.")
+print("")
+
+# Print the sorted evolution lines with display names for verification
+for line in sorted_evolution_lines_sorted_by_names:
+    print(line)
 
 fusionLines = {}
 
@@ -238,112 +295,199 @@ for head in range(1, 471):
                     for bodyEvo in evolutions[body]:
                         fusionLines[head][body] += register_fusions([], headEvo[0], bodyEvo[0], evolution_type='simultaneous')
 
+print("")
 print("Checking custom sprite status...")
 
-file_path = 'customSprites.txt'
+file_path = 'spritestatuses.txt'
 
-customSpriteIDs = []
+customSpriteIDs = set()
 customSpriteHEAD = {}
 customSpriteBODY = {}
+customSpriteStatus = {}
 
 # Open the file and read each line
 with open(file_path, 'r') as file:
     for line in file:
-        line = line.strip()  # Remove any leading/trailing whitespace or newline characters
+        line = line.strip()
         if line:
             parts = line.split('.')
-            if len(parts) == 2:
-                head = parts[0]
-                body = parts[1]
+            if len(parts) == 3:
+                head, body, status = parts
                 sprite_id = f"{head}.{body}"
-                
-                # Step 2: Populate dictionaries
-                customSpriteIDs.append(sprite_id)
+                customSpriteIDs.add(sprite_id)
                 customSpriteHEAD[sprite_id] = head
                 customSpriteBODY[sprite_id] = body
+                customSpriteStatus[sprite_id] = status
+            else:
+                print(f"Skipping invalid line: {line}")
 
 print("Done")
 
 def has_custom_sprite(head, body):
     return f"{head}.{body}" in customSpriteIDs
 
+def print_status(head, body):
+    return customSpriteStatus.get(f"{head}.{body}", "No custom sprites yet!")
+
 def print_sprite(head, body):
     if has_custom_sprite(head, body):
         return f"https://gitlab.com/CristataC/ftl-sprites/-/raw/master/CustomBattlers/{head}.{body}.png"
-    return "No main sprite yet!"
+    return " "
 
 def print_dex(head, body):
-    dex_link = f"https://www.fusiondex.org/{head}.{body}"
-#     print(f"DEBUG: Head={head}, Body={body}, Dex Link={dex_link}")  # Print debug info
-    return dex_link
+    return f"https://www.fusiondex.org/{head}.{body}"
 
 def print_fusion_line(head, body):
     visited = set()
-    fusion_line = "|".join(traverse_fusion_line(head, body, visited))
-#     print(f"DEBUG: Head={head}, Body={body}, Fusion Line={fusion_line}")  # Print debug info
-    return fusion_line
+    return "|".join(traverse_fusion_line(head, body, visited))
 
 def traverse_fusion_line(head, body, visited):
     visited.add((head, body))
-    line = []
+    line = [f"{head}.{body}"]
     for fusion in fusionLines[head][body]:
         if (fusion[0], fusion[1]) not in visited:
-            subline = traverse_fusion_line(fusion[0], fusion[1], visited)
-            line.extend(subline)
-    line.insert(0, f"{head}.{body}")
+            line.extend(traverse_fusion_line(fusion[0], fusion[1], visited))
     return line
-                                
-def export_csv():
-    print("Generating charts...")
 
-    headNames = ["",""]
-    headIds = ["",""]
-    for head in range(1, 471):
-        headNames.append(displayName[head])
-        headIds.append(str(head))
-    dexRows = [",".join(headNames)+"\n", ",".join(headIds)+"\n"]
-    fusionLineRows = [",".join(headNames)+"\n", ",".join(headIds)+"\n"]
-    spriteRows     = [",".join(headNames)+"\n", ",".join(headIds)+"\n"]
+def export_csv_data():
+    print("Generating CSV files for custom sprites, fused evolution lines, and fusiondex links.")
+    
+    headNames = ["", ""] + [displayName[i] for i in range(1, 471)]
+    headIds = ["", ""] + [str(i) for i in range(1, 471)]
+    
+    # Prepare CSV data
+    dexRows = [headNames, headIds]
+    fusionLineRows = [headNames, headIds]
+    spriteRows = [headNames, headIds]
+
     for body in range(1, 471):
         dexRow = [displayName[body], str(body)]
         fusionLineRow = [displayName[body], str(body)]
-        spriteRow     = [displayName[body], str(body)]
+        spriteRow = [displayName[body], str(body)]
+
         for head in range(1, 471):
+            sprite_id = f"{head}.{body}"
             dexRow.append(print_dex(head, body))
             fusionLineRow.append(print_fusion_line(head, body))
-            spriteRow    .append(print_sprite(head, body))
-        dexRows.append(",".join(dexRow) + "\n")
-        fusionLineRows.append(",".join(fusionLineRow) + "\n")
-        spriteRows    .append(",".join(spriteRow    ) + "\n")
+            spriteRow.append(print_sprite(head, body))
+            
+            # Print progress for every 10 bodies
+            if head % 470 == 0 and body % 47 == 0:
+                start_body = max(1, body - 46)
+                end_body = body
+                print(f"Processed all heads for bodies {start_body}-{end_body}.")
 
-    print("Exporting custom sprites completion chart...")
-    with open("export_custom_sprites.csv", "w") as file:
-        file.writelines(spriteRows)
+        dexRows.append(dexRow)
+        fusionLineRows.append(fusionLineRow)
+        spriteRows.append(spriteRow)
 
-    print("Exporting fusion line chart...")
-    with open("export_fusion_lines.csv", "w") as file:
-        file.writelines(fusionLineRows)
+    # Write CSV files in bulk
+    with open("export_custom_sprites.csv", "w", newline='') as file:
+        writer = csv.writer(file)
+        writer.writerows(spriteRows)
 
-    print("Exporting fusiondex links...")
-    with open("export_fusiondex_links.csv", "w") as file:
-        file.writelines(dexRows)
+    with open("export_fusion_lines.csv", "w", newline='') as file:
+        writer = csv.writer(file)
+        writer.writerows(fusionLineRows)
 
-    print("Done")
+    with open("export_fusiondex_links.csv", "w", newline='') as file:
+        writer = csv.writer(file)
+        writer.writerows(dexRows)
+
+    print("Finished generating and exporting CSV files for custom sprites, fused evolution lines, and fusiondex links.")
+
+def export_sprite_statuses():
+    print("Generating CSV file for sprite statuses.")
+
+    headNames = ["", ""] + [displayName[i] for i in range(1, 471)]
+    headIds = ["", ""] + [str(i) for i in range(1, 471)]
+    
+    statusRows = [headNames, headIds]
+
+    for body in range(1, 471):
+        statusRow = [displayName[body], str(body)]
+        
+        for head in range(1, 471):
+            statusRow.append(print_status(head, body))
+            
+            # Print progress for every 10 bodies
+            if head % 470 == 0 and body % 47 == 0:
+                start_body = max(1, body - 46)
+                end_body = body
+                print(f"Processed all heads for bodies {start_body}-{end_body}.")
+                
+        statusRows.append(statusRow)
+    
+    # Write CSV file in bulk
+    with open("export_sprite_statuses.csv", "w", newline='') as file:
+        writer = csv.writer(file)
+        writer.writerows(statusRows)
+    
+    print("Finished exporting CSV file for sprite statuses.")
+
+
+                    # I had little to no part in writing the following sections of this code:
+
 
 print("")
 print("Enter \"[head name]/[body name]\" to check an evolution line.")
 print("Enter \"export\" to export the data as CSV.")
+print("Enter \"info\" for info on the CSV sheets.")
 print("Enter \"stop\" to exit.")
 print("")
 
 while True:
     fuseInput = input("Input > ").lower()
 
-    if fuseInput == "exit" or fuseInput == "quit" or fuseInput == "stop":
+    if fuseInput in ("exit", "quit", "stop"):
         break
 
     if fuseInput == "export":
-        export_csv()
+        export_csv_data()
+        print("")
+        export_sprite_statuses()
+        print("")
+        continue
+
+
+                    # Well, except for the "info" part, that's all me:
+
+
+    if fuseInput == "info":
+        print("")
+        print("\"export\" will generate data for the following CSV files:")
+        print("")
+        print("	export_custom_sprites.csv")
+        print("	export_fusion_lines.csv")
+        print("	export_fusiondex_links.csv")
+        print("	export_sprite_statuses.csv")
+        print("")
+        print("Each of these files corresponds to a sheet within the auto-chart.")
+        print("These sheets contain essential data!")
+        print("As such, they MUST be re-exported monthly once fusiondex.org has been updated to the newest sprite pack.")
+        print("")
+        print("")
+        print("Before exporting, make sure to run \"spritecheck.py\"!")
+        print("\"Spritecheck.py\" generates a TXT file which is used by \"export_sprite_statuses.csv\".")
+        print("If it isn't updated, then the CSV file won't be updated either.")
+        print("")
+        print("")
+        print("Once exported, the corresponding sheets within the auto-chart will need to be updated.")
+        print("To update the auto-chart sheets...")
+        print("")
+        print("	1. Use ctrl+A to select all of the cells in the sheet,")
+        print("	2. Press the delete key to clear the cells,")
+        print("	3. Navigate the menus: File > Import > Upload > Browse,")
+        print("	4. Select the corresponding CSV file,")
+        print("	5. Change \"Import location\" to \"Append to current sheet\",")
+        print("	6. Hit \"Import Data\".")
+        print("")
+        print("(Repeat for all of the sheets/CSV files)")
+        print("")
+        print("")
+        print("")
+        print("--SCROLL UP FOR INFO--")
+        print("Or enter a new input below!")
         print("")
         continue
     
@@ -378,9 +522,6 @@ while True:
         continue
 
     for pair in fusionLines[head][body]:
-        if has_custom_sprite(pair[0], pair[1]):
-            print(f"✓ {displayName[pair[0]]} / {displayName[pair[1]]}")
-        else:
-            print(f"  {displayName[pair[0]]} / {displayName[pair[1]]}")
+        print(f"  {displayName[pair[0]]} / {displayName[pair[1]]}")
 
     print("")

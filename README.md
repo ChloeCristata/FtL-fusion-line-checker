@@ -5,8 +5,10 @@ Original version/code is from SylviBlossom. This was forked from their directory
 ---
 My changes were focused on...
 - Updating it to include all Pokemon currently in IF,
-- Removing the broken sprite-links since it seems like wherever they were being taken from no longer exists,
-- And then noticing that Pokemon evolving at the same level weren't being accounted for properly and spending the next millenia trying to fix it,
-- Plus fixing some smaller issues I happened across while trying to figure that out.
+- Bug-fixing,
+- And improving the overall utility
 ---
-Run `gen.py` in the command line to easily check fused evolution lines, or to re-export the CSV sheets.
+Run 'gen.py' to easily check fused evolution lines, or to re-export the CSV sheets.
+
+Added Bonus:
+You can also run 'attributeexporter.py' to generate, filter, and export lists of Pokemon based on criteria from 'pokemon.txt'

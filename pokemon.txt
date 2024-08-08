@@ -1,4 +1,8 @@
-﻿# See the documentation on the wiki to learn how to edit this file.
+﻿# NOTE: This file was taken from the official Infinite Fusion GitHub
+# The original version can be found here:
+# https://github.com/infinitefusion/infinitefusion-e18/blob/3326daaaab5f393ae7457b4f8c2e0169c14173f5/PBS/pokemon.txt
+# This file has been edited in various ways, primarily applying certain changes to evolutions (such as making time based evolutions only dependent on their other requirement(s)).
+# Other than changing some evolution data, I also fixed Oricorio's color data so that each form has the correct pokedex-color listed.
 #-------------------------------
 [1]
 Name = Bulbasaur
@@ -14146,7 +14150,7 @@ Compatibility = Flying
 StepsToHatch = 5120
 Height = 0.6
 Weight = 3.4
-Color = Red
+Color = Yellow
 Shape = Head
 Kind = Dancing
 Pokedex = It creates an electric charge by rubbing its feathers together. It dances over to its enemies and delivers shocking electrical punches.
@@ -14180,7 +14184,7 @@ Compatibility = Flying
 StepsToHatch = 5120
 Height = 0.6
 Weight = 3.4
-Color = Red
+Color = Pink
 Shape = Head
 Kind = Dancing
 Pokedex = This Oricorio relaxes by swaying gently. This increases its psychic energy, which it then fires at its enemies.
@@ -14214,7 +14218,7 @@ Compatibility = Flying
 StepsToHatch = 5120
 Height = 0.6
 Weight = 3.4
-Color = Red
+Color = Purple
 Shape = Head
 Kind = Dancing
 Pokedex = It summons the dead with its dreamy dancing. From their malice, it draws power with which to curse its enemies.
